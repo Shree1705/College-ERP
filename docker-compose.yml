@@ -1,0 +1,48 @@
+version: '3'
+
+services:
+  server:
+    build:
+      context: ./server
+      dockerfile: Dockerfile
+    image: backend
+    container_name: backend_c
+    # volumes:
+    #   - ./backend:/app 
+    #   - /app/node_modules
+    ports:
+      - "5000:5000"
+    env_file:
+      - ./server/.env
+    # environment:
+    #   - PORT=3001 
+    #   - DB_URL=mongodb+srv://Lava:Lava7259@cluster0.6j9njrl.mongodb.net/hotel_ease
+    networks:
+      - app-network
+  client:
+    build:
+      context: ./client
+      dockerfile: Dockerfile
+    image: client
+    container_name: client_c
+    command: npm start
+    # env_file:
+    #   - ./client/.env
+    # environment:
+    #   - REACT_APP_BACKEND_URL=http://localhost:3001
+    #   - REACT_APP_SERVER_URL=http://localhost:3002
+    # volumes:
+    #   - ./client/:/app
+    #   - /app/node_modules
+    depends_on:
+      - server
+    ports:
+      - "3000:3000"
+    networks:
+      - app-network
+    stdin_open: true
+    tty: true    
+
+networks:
+    app-network:
+        driver: bridge
